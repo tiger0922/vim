@@ -10,6 +10,7 @@ call plug#end()
 
 set encoding=utf-8
 set fileencodings=utf-8,cp950
+set hidden
 
 set relativenumber
 set cursorline
@@ -19,14 +20,16 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#tab_nr_type = 1 " tab number
 let g:airline#extensions#tabline#show_tab_nr = 1
 let g:airline#extensions#tabline#formatter = 'default'
-let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnametruncate = 16
 let g:airline#extensions#tabline#fnamecollapse = 2
-let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tabline#buffer_idx_mode = 0
+let g:airline#extensions#tabline#ignore_bufadd_pat = 'defx|gundo|nerd_tree|startify|tagbar|undotree|vimfiler'
 
 syntax on
 set bg=dark
 set t_Co=256
+set buftype=
 set incsearch
 set backspace=indent,eol,start
 set clipboard=unnamed
