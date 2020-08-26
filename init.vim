@@ -16,6 +16,7 @@ set hidden
 set number
 set relativenumber
 set cursorline
+set splitbelow
 
 " vimairline settings
 let g:airline_theme='dark'
@@ -38,7 +39,6 @@ highlight LspDiagnosticsError ctermfg=14 guifg=#40ffff
 highlight LspDiagnosticsWarning ctermfg=14 guifg=#40ffff
 highlight LspDiagnosticsInformation ctermfg=14 guifg=#40ffff
 
-
 syntax on
 set bg=dark
 set t_Co=256
@@ -48,7 +48,38 @@ set backspace=indent,eol,start
 " Bind vim clipboard to system clipboard (macOS)
 set clipboard=unnamed
 " Local settings in terminal-mode
-au TermOpen * setlocal nonumber norelativenumber nocursorline
+
+" Terminal Function
+let g:term_buf = 0
+let g:term_win = 0
+function! TermToggle(height)
+    if win_gotoid(g:term_win)
+        hide
+    else
+        botright new
+        exec "resize " . a:height
+        try
+            exec "buffer " . g:term_buf
+        catch
+            call termopen($SHELL, {"detach": 0})
+            let g:term_buf = bufnr("")
+            set nonumber
+            set norelativenumber
+            set nocursorline
+            set signcolumn=no
+        endtry
+        startinsert!
+        let g:term_win = win_getid()
+    endif
+endfunction
+
+" Toggle terminal on/off (neovim)
+nnoremap <A-t> :call TermToggle(12)<CR>
+inoremap <A-t> <Esc>:call TermToggle(12)<CR>
+tnoremap <A-t> <C-\><C-n>:call TermToggle(12)<CR>
+
+" Terminal go back to normal mode
+tnoremap :q! <C-\><C-n>:q!<CR>
 
 set ruler
 set expandtab
