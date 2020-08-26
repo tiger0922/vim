@@ -47,7 +47,8 @@ set incsearch
 set backspace=indent,eol,start
 " Bind vim clipboard to system clipboard (macOS)
 set clipboard=unnamed
-au TermOpen * setlocal nonumber norelativenumber
+" Local settings in terminal-mode
+au TermOpen * setlocal nonumber norelativenumber nocursorline
 
 set ruler
 set expandtab
@@ -84,6 +85,7 @@ nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
 nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
 nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+nnoremap <silent> ge    <cmd>lua vim.lsp.util.show_line_diagnostics()<CR>
 
 " Mappings to access buffers (don't use "\p" because a
 " delay before pressing "p" would accidentally paste).
