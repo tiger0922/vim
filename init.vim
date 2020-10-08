@@ -3,10 +3,14 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-repeat'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/deoplete-lsp'
 Plug 'neovim/nvim-lsp'
 Plug 'preservim/nerdtree'
+Plug 'morhetz/gruvbox'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 call plug#end()
 
 set encoding=utf-8
@@ -18,8 +22,9 @@ set relativenumber
 set cursorline
 set splitbelow
 
+set foldmethod=indent
 " vimairline settings
-let g:airline_theme='dark'
+let g:airline_theme='gruvbox'
 let g:airline_powerline_fonts=1
 " vimairline setting for tabline
 let g:airline#extensions#tabline#enabled = 1
@@ -39,6 +44,8 @@ highlight LspDiagnosticsError ctermfg=14 guifg=#40ffff
 highlight LspDiagnosticsWarning ctermfg=14 guifg=#40ffff
 highlight LspDiagnosticsInformation ctermfg=14 guifg=#40ffff
 
+colorscheme gruvbox
+
 syntax on
 set bg=dark
 set t_Co=256
@@ -46,7 +53,7 @@ set buftype=
 set incsearch
 set backspace=indent,eol,start
 " Bind vim clipboard to system clipboard (macOS)
-set clipboard=unnamed
+set clipboard=unnamedplus
 " Local settings in terminal-mode
 
 " Terminal Function
