@@ -1,17 +1,24 @@
 call plug#begin()
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'morhetz/gruvbox'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/deoplete-lsp'
-Plug 'neovim/nvim-lsp'
+let g:deoplete#enable_at_startup = 1
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
+Plug 'neovim/nvim-lspconfig'
 Plug 'preservim/nerdtree'
-Plug 'morhetz/gruvbox'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+"Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 call plug#end()
+
+let mapleader = ","
+
+colorscheme gruvbox
 
 set encoding=utf-8
 set fileencodings=utf-8,cp950
@@ -39,12 +46,35 @@ let g:airline#extensions#tabline#ignore_bufadd_pat = 'defx|gundo|nerd_tree|start
 
 let g:airline#extensions#nerdtree_status = 1
 
-"Neovim buildin Lsp plugin settings, change color of additional information.
-highlight LspDiagnosticsError ctermfg=14 guifg=#40ffff
-highlight LspDiagnosticsWarning ctermfg=14 guifg=#40ffff
-highlight LspDiagnosticsInformation ctermfg=14 guifg=#40ffff
+" vim-go
+let g:go_def_mapping_enabled = 0
+au FileType go nmap <C-]> <Plug>(go-def)
+au FileType go nmap <C-[> <Plug>(go-def-pop)
+map <C-n> :cnext<CR>
+map <C-p> :cprevious<CR>
+nnoremap <Leader>a :cclose<CR>
+autocmd FileType go nmap <leader>c  <Plug>(go-build)
+autocmd FileType go nmap <leader>r  <Plug>(go-run)
 
-colorscheme gruvbox
+" Plugin key-mappings.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
 
 syntax on
 set bg=dark
@@ -97,9 +127,7 @@ set shiftwidth=4
 set showcmd
 set omnifunc=v:lua.vim.lsp.omnifunc
 
-let g:deoplete#enable_at_startup = 1
 set completeopt-=preview
-let mapleader = ","
 
 inoremap jk <ESC>
 " Auto closeing brackets
@@ -109,10 +137,22 @@ inoremap {<CR> {<CR>}<ESC>O
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
 lua << EOF
-  require'nvim_lsp'.clangd.setup{}
-  require'nvim_lsp'.gopls.setup{}
-  require'nvim_lsp'.vimls.setup{}
+  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+      virtual_text = true,
+      signs = true,
+      update_in_insert = true,
+    }
+  ) 
+  require'lspconfig'.clangd.setup{}
+  require'lspconfig'.gopls.setup{}
+  require'lspconfig'.vimls.setup{}
 EOF
+
+"Neovim buildin Lsp plugin settings, change color of additional information.
+highlight LspDiagnosticsDefaultError ctermfg=208 guifg=#fe8019
+highlight LspDiagnosticsInformation ctermfg=208 guifg=#fe8019
+highlight LspDiagnosticsWarning ctermfg=208 guifg=#fe8019
 
 " Neovim buildin Lsp keyboard remappings
 nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
@@ -124,7 +164,7 @@ nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
 nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
 nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-nnoremap <silent> ge    <cmd>lua vim.lsp.util.show_line_diagnostics()<CR>
+nnoremap <silent> ge    <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
 " Mappings to access buffers (don't use "\p" because a
 " delay before pressing "p" would accidentally paste).
