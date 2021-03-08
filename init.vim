@@ -13,6 +13,8 @@ Plug 'Shougo/neosnippet-snippets'
 Plug 'neovim/nvim-lspconfig'
 Plug 'preservim/nerdtree'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 "Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 call plug#end()
 
@@ -29,7 +31,7 @@ set relativenumber
 set cursorline
 set splitbelow
 
-set foldmethod=indent
+" set foldmethod=indent
 " vimairline settings
 let g:airline_theme='gruvbox'
 let g:airline_powerline_fonts=1
@@ -46,15 +48,24 @@ let g:airline#extensions#tabline#ignore_bufadd_pat = 'defx|gundo|nerd_tree|start
 
 let g:airline#extensions#nerdtree_status = 1
 
+let g:NERDTreeQuitOnOpen = 1
+
+" fzf
+nnoremap <Leader>r :Rg<CR>
+nnoremap <Leader>s :GFiles<CR>
+
 " vim-go
 let g:go_def_mapping_enabled = 0
+let g:go_list_type = "quickfix"
 au FileType go nmap <C-]> <Plug>(go-def)
 au FileType go nmap <C-[> <Plug>(go-def-pop)
 map <C-n> :cnext<CR>
 map <C-p> :cprevious<CR>
 nnoremap <Leader>a :cclose<CR>
-autocmd FileType go nmap <leader>c  <Plug>(go-build)
-autocmd FileType go nmap <leader>r  <Plug>(go-run)
+nnoremap <Leader>u :GoFillStruct<CR>
+nnoremap <Leader>d :GoDecls<CR>
+"autocmd FileType go nmap <leader>c  <Plug>(go-build)
+"autocmd FileType go nmap <leader>r  <Plug>(go-run)
 
 " Plugin key-mappings.
 " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
@@ -151,8 +162,8 @@ EOF
 
 "Neovim buildin Lsp plugin settings, change color of additional information.
 highlight LspDiagnosticsDefaultError ctermfg=208 guifg=#fe8019
-highlight LspDiagnosticsInformation ctermfg=208 guifg=#fe8019
-highlight LspDiagnosticsWarning ctermfg=208 guifg=#fe8019
+highlight LspDiagnosticsDefaultWarning ctermfg=208 guifg=#fe8019
+highlight LspDiagnosticsDefaultInformation ctermfg=208 guifg=#fe8019
 
 " Neovim buildin Lsp keyboard remappings
 nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
